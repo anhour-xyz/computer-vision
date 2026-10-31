@@ -1,0 +1,11 @@
+cat > .gitignore <<'EOF'
+.venv/
+data/
+runs/
+*.pt
+*.mov
+*.mp4
+*.avi
+__pycache__/
+*.pyc
+EOF

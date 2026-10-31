@@ -22,7 +22,9 @@ A work-in-progress script for exploring webcam-based tracking. It configures Luc
 
 Detect and track vehicles in a traffic video using YOLO and ByteTrack. Four pairs of colored `IN` and `OUT` zones mark traffic directions. Once a tracked object's center enters an `IN` zone, its bounding box, ID label, and movement trail use that zone's color.
 
-![Vehicle direction tracking demo](projects/vehicle-detection-tracking/assets/tracking-demo.gif)
+![Vehicle direction tracking demo](assets/tracking-demo.gif)
+
+[Vehicle tracking project files](projects/vehicle-detection-tracking/)
 
 
 ### 2. Poker hand recognition
@@ -30,5 +32,5 @@ Detect and track vehicles in a traffic video using YOLO and ByteTrack. Four pair
 Recognize playing cards from a webcam feed using a custom YOLO model. The app draws card labels and confidence scores, then evaluates the poker hand when exactly five distinct cards meet the confidence threshold of 0.5 in a frame.
 
 
-[Project files](projects/pocker_hand/)
+[Poker project files](projects/poker-hand/)
 
