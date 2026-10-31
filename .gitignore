@@ -1,0 +1,10 @@
+# Downloaded datasets (the notebooks download these when needed)
+learning/data/
+homeworks/**/data/
+
+# Local Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/

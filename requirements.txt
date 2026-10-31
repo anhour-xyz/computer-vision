@@ -1,0 +1,6 @@
+torch>=2.2
+torchvision>=0.17
+ultralytics>=8.3
+matplotlib>=3.8
+jupyterlab>=4.0
+
