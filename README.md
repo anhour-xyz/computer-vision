@@ -1,9 +1,19 @@
 # Computer Vision Learning & Projects
 
-A collection of Python computer vision projects, learning notebooks, and coursework. The projects explore real-time card recognition, vehicle tracking, image classification, and image processing with OpenCV, PyTorch, and Ultralytics YOLO.
+My collection of Python computer vision learning notebooks, coursework, and projects.
 
 ## Learning
 
+### 1. Image classification
+
+Explore image classification on CIFAR-10 using PyTorch and Torchvision. The notebook loads and normalizes the dataset, prepares training and test data loaders, and builds a convolutional neural network for ten image classes.
+
+The model uses two convolutional layers with ReLU activations and max pooling, followed by three fully connected layers. Training runs for 30 epochs using cross-entropy loss and stochastic gradient descent with momentum. The notebook currently reports training loss; test-set evaluation has not yet been added.
+
+
+### 2. Object tracking
+
+A work-in-progress script for exploring webcam-based tracking. It configures Lucas–Kanade optical-flow and feature-detection parameters, captures frames from webcam index `0`, and converts them to grayscale. Optical-flow updates, trajectory drawing, and centroid tracking are not yet implemented.
 
 
 ## Projects
@@ -14,15 +24,11 @@ Detect and track vehicles in a traffic video using YOLO and ByteTrack. Four pair
 
 ![Vehicle direction tracking demo](projects/vehicle-detection-tracking/assets/tracking-demo.gif)
 
-The zone coordinates are designed for the sample intersection and scale with the video resolution. For other camera views, edit the polygons in `track_vehicles.py`. The `OUT` zones are visual guides; the script does not calculate entry-to-exit counts.
-
-[Project files](projects/vehicle-detection-tracking/)
 
 ### 2. Poker hand recognition
 
 Recognize playing cards from a webcam feed using a custom YOLO model. The app draws card labels and confidence scores, then evaluates the poker hand when exactly five distinct cards meet the confidence threshold of 0.5 in a frame.
 
-The hand evaluator covers categories from high card through royal flush. Ace-low straights (`A–2–3–4–5`) are not currently handled.
 
-
+[Project files](projects/pocker_hand/)
 

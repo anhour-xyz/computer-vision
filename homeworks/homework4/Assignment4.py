@@ -120,6 +120,21 @@ def get_second_layer_weights():
     second_weight = net.conv2.weight.detach().clone()  # TODO: get conv2 weights (exclude bias)
     return second_weight
 
+def sampled(net,dataset):
+    indices = torch.randperm(len(dataset))[:1000].tolist()
+    subset = torch.utils.data.Subset(dataset, indices)
+    loader = torch.utils.data.DataLoader(subset,batch_size=100,num_workers = 0)
+    net.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for images, labels in loader:
+            predict = net(images).argmax(dim=1)
+            correct += (predict == labels).sum().item()
+            total += labels.size(0)
+    net.train()
+    return correct / total
+
 def hyperparameter_sweep():
     '''
     Reuse the CNN and training code from Question 2
@@ -128,8 +143,67 @@ def hyperparameter_sweep():
     compute and record the training and test errors every 2000 iterations by randomly sampling 1000 images from each dataset
     After training, plot three curves
     '''
-    return None
+    transform = v2.Compose([v2.ToImage(),v2.ToDtype(torch.float32, scale=True),v2.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    train_data = torchvision.datasets.CIFAR10(root='./data',train = True, download = True,transform = transform)
+    test_data = torchvision.datasets.CIFAR10(root='./data',train=False,download=True,transform=transform)
+    trainloader = torch.utils.data.DataLoader(train_data,batch_size=4,shuffle=True,num_workers=0)
+    
+    res = {}
+    for lr in [0.01,0.001,0.0001]:
+        net = Net()
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.SGD(net.parameters(),lr=lr,momentum=0.9)
+        iteration = 0
+        running_loss = 0.0
+        record = {'iterations':[], 'loss':[], 'train_error':[], 'test_error':[]}
+        for epoch in range(2):
+            for inputs, labels in trainloader:
+                optimizer.zero_grad()
+                outputs = net(inputs)
+                loss = criterion(outputs,labels)
+                loss.backward()
+                optimizer.step()
+                running_loss += loss.item()
+                iteration += 1
+                if iteration % 2000 == 0:
+                    train_acc = sampled(net,train_data)
+                    test_acc = sampled(net,test_data)
+                    record['iterations'].append(iteration)
+                    record['loss'].append(running_loss/2000)
+                    record['train_error'].append(100 * (1-train_acc))
+                    record['test_error'].append(100 * (1-test_acc))
+                    print(
+                        f'lr={lr}, iteration={iteration}, '
+                        f'loss={running_loss / 2000:.3f}, '
+                        f'train accuracy={100 * train_acc:.1f}%, '
+                        f'test accuracy={100 * test_acc:.1f}%',
+                        flush=True
+                    )
+                    running_loss = 0.0
+
+        res[lr] = record
+
+    torch.save(res,'results')
+    for key, ylabel,filename in [
+        ('loss', 'Training loss', 'training_loss.png'),
+        ('train_error', 'Training error (%)', 'training_error.png'),
+        ('test_error', 'Test error (%)', 'test_error.png')
+    ]:
+        plt.figure()
+        for lr, record in res.items():
+            plt.plot(record['iterations'], record[key], label=f'lr={lr}')
+        plt.xlabel('Iteration')
+        plt.ylabel(ylabel)
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig(filename,dpi=300)
+        plt.close()
+    return res
+
+    
 
 if __name__ == "__main__":
-    train_classifier()
-    evalNetwork()
+    #train_classifier()
+    #evalNetwork()
+    hyperparameter_sweep()
